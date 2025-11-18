@@ -2,12 +2,8 @@
 Unit tests for the clear_chat() function.
 """
 import pytest
-import sys
-import os
 
-# Add parent directory to path to import main
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+# Import after conftest has set up mocks
 from main import clear_chat
 
 

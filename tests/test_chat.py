@@ -4,20 +4,14 @@ Unit tests for the chat() function.
 These tests use mocking to avoid real API calls to Google Gemini.
 """
 import pytest
-import sys
-import os
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
-# Add parent directory to path to import main
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# Mock the chain before importing main to avoid API initialization
-with patch('main.ChatGoogleGenerativeAI'):
-    from main import chat
+# Import after conftest has set up mocks
+from main import chat
 
 
 @pytest.mark.unit
-def test_chat_with_empty_history(mock_chain, mocker, empty_history):
+def test_chat_with_empty_history(empty_history):
     """Test chat function with no previous conversation history."""
     # Arrange
     user_input = "What is relativity?"
@@ -40,7 +34,7 @@ def test_chat_with_empty_history(mock_chain, mocker, empty_history):
 
 
 @pytest.mark.unit
-def test_chat_with_existing_history(mock_chain, mocker, sample_history):
+def test_chat_with_existing_history(sample_history):
     """Test chat function with existing conversation history."""
     # Arrange
     user_input = "Can you explain more?"
@@ -64,7 +58,7 @@ def test_chat_with_existing_history(mock_chain, mocker, sample_history):
 
 
 @pytest.mark.unit
-def test_chat_history_conversion_to_langchain_format(mocker, sample_history):
+def test_chat_history_conversion_to_langchain_format(sample_history):
     """Test that Gradio history is correctly converted to LangChain message format."""
     # Arrange
     from langchain_core.messages import HumanMessage, AIMessage

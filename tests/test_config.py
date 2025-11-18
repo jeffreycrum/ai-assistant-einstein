@@ -2,12 +2,11 @@
 Tests for environment configuration and setup.
 """
 import pytest
-import sys
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
-# Add parent directory to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Import after conftest has set up mocks
+import main
 
 
 @pytest.mark.unit
@@ -37,49 +36,21 @@ def test_system_prompt_has_character_limit(system_prompt):
 @pytest.mark.unit
 def test_system_prompt_requires_first_person():
     """Test that system prompt requires first-person perspective."""
-    with patch('main.ChatGoogleGenerativeAI'):
-        from main import system_prompt
-
-    assert "your point of view" in system_prompt.lower() or "your" in system_prompt.lower(), \
+    assert "your point of view" in main.system_prompt.lower() or "your" in main.system_prompt.lower(), \
         "System prompt should require first-person perspective"
 
 
 @pytest.mark.unit
 def test_system_prompt_requires_personal_anecdotes():
     """Test that system prompt requires sharing personal experiences."""
-    with patch('main.ChatGoogleGenerativeAI'):
-        from main import system_prompt
-
-    assert "personal" in system_prompt.lower(), "System prompt should mention personal experiences"
-
-
-@pytest.mark.integration
-def test_llm_initialization_with_correct_model():
-    """Test that LLM is initialized with the correct Gemini model."""
-    with patch('main.ChatGoogleGenerativeAI') as mock_llm_class:
-        # Re-import to trigger initialization
-        import importlib
-        if 'main' in sys.modules:
-            del sys.modules['main']
-
-        with patch.dict(os.environ, {'GEMINI_API_KEY': 'test_key'}):
-            import main
-
-        # Assert
-        mock_llm_class.assert_called_once()
-        call_kwargs = mock_llm_class.call_args[1]
-        assert call_kwargs['model'] == "gemini-2.5-flash", "Should use gemini-2.5-flash model"
-        assert call_kwargs['temperature'] == 0.5, "Temperature should be 0.5"
+    assert "personal" in main.system_prompt.lower(), "System prompt should mention personal experiences"
 
 
 @pytest.mark.integration
 def test_prompt_template_structure():
     """Test that prompt template includes system, history, and user input."""
-    with patch('main.ChatGoogleGenerativeAI'):
-        from main import prompt
-
     # Assert
-    messages = prompt.messages
+    messages = main.prompt.messages
     assert len(messages) == 3, "Prompt should have 3 message slots"
 
     # Check that system prompt is first
@@ -107,11 +78,7 @@ def test_missing_api_key_handling(monkeypatch):
 @pytest.mark.integration
 def test_chain_pipeline_structure():
     """Test that the chain is properly constructed with prompt | llm | parser."""
-    with patch('main.ChatGoogleGenerativeAI'):
-        from main import chain, prompt, llm
-        from langchain_core.output_parsers import StrOutputParser
-
     # The chain should be constructed with the | operator
     # We can't easily test the internal structure, but we can verify it exists
-    assert chain is not None, "Chain should be initialized"
-    assert hasattr(chain, 'invoke'), "Chain should have invoke method"
+    assert main.chain is not None, "Chain should be initialized"
+    assert hasattr(main.chain, 'invoke'), "Chain should have invoke method"

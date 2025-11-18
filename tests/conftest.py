@@ -2,8 +2,25 @@
 Shared pytest fixtures for AI Assistant Einstein tests.
 """
 import os
+import sys
 import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, patch
+
+# Add parent directory to path before any imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
+# Mock the LangChain Google GenAI at the module level before importing main
+@pytest.fixture(scope="session", autouse=True)
+def mock_langchain_imports():
+    """Mock LangChain components to avoid API calls during tests."""
+    with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
+        # Configure the mock to return a mock LLM instance
+        mock_llm_instance = MagicMock()
+        mock_llm.return_value = mock_llm_instance
+        yield mock_llm
+
+
 from langchain_core.messages import HumanMessage, AIMessage
 
 
