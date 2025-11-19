@@ -1,0 +1,18 @@
+# Development and testing dependencies
+-r requirements.txt
+
+# Testing framework and utilities
+pytest>=7.4.0
+pytest-mock>=3.11.1
+pytest-cov>=4.1.0
+pytest-env>=0.8.2
+pytest-asyncio>=0.21.0
+
+# Code quality tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Additional testing utilities
+responses>=0.23.0  # For mocking HTTP requests
+freezegun>=1.2.0   # For mocking time in tests
