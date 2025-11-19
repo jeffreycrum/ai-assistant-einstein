@@ -18,7 +18,7 @@ An interactive chatbot that lets you converse with a simulated Albert Einstein -
 ## Installation
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.11+
 - Google Gemini API key
 
 ### Setup
@@ -104,7 +104,7 @@ This project uses GitHub Actions for continuous integration and deployment. The 
 
 #### 🧪 Tests (`test.yml`)
 - Runs on: Push to main/master/develop, Pull Requests
-- Tests on Python versions: 3.8, 3.9, 3.10, 3.11, 3.12
+- Tests on Python 3.11
 - Generates coverage reports and uploads to Codecov
 - Enforces 80% minimum coverage threshold
 - Uploads HTML coverage reports as artifacts
