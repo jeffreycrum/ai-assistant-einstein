@@ -23,16 +23,16 @@ system_prompt = """
 """
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=gemini_key,
-    temperature=0.5
+    model="gemini-2.5-flash", google_api_key=gemini_key, temperature=0.5
 )
 
-prompt = ChatPromptTemplate.from_messages([
-    ("system", system_prompt),
-    (MessagesPlaceholder(variable_name="history")),
-    ("user", "{input}")
-])
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        (MessagesPlaceholder(variable_name="history")),
+        ("user", "{input}"),
+    ]
+)
 
 chain = prompt | llm | StrOutputParser()
 
@@ -45,21 +45,19 @@ def chat(user_input, history):
         elif item["role"] == "assistant":
             langchain_history.append(AIMessage(content=item["content"]))
 
-    response = chain.invoke(
-        {"input": user_input, "history": langchain_history}
+    response = chain.invoke({"input": user_input, "history": langchain_history})
+
+    return (
+        "",
+        history
+        + [
+            {"role": "user", "content": user_input},
+            {"role": "assistant", "content": response},
+        ],
     )
 
-    return ("",
-            history + [
-                {"role": "user", "content": user_input},
-                {"role": "assistant", "content": response},
-            ])
 
-
-page = gr.Blocks(
-    title="Chat with Mean Einstein",
-    theme=gr.themes.Soft()
-)
+page = gr.Blocks(title="Chat with Mean Einstein", theme=gr.themes.Soft())
 
 
 def clear_chat():
@@ -79,9 +77,7 @@ if __name__ == "__main__":
         )
 
         chatbot = gr.Chatbot(
-            type="messages",
-            avatar_images=(None, 'einstein.png'),
-            show_label=False
+            type="messages", avatar_images=(None, "einstein.png"), show_label=False
         )
 
         msg = gr.Textbox(show_label=False, placeholder="Ask Einstein Anything")

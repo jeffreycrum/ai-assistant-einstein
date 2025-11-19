@@ -1,6 +1,7 @@
 """
 Tests for environment configuration and setup.
 """
+
 import pytest
 import os
 from unittest.mock import patch
@@ -21,7 +22,9 @@ def test_system_prompt_contains_einstein_persona(system_prompt):
     """Test that system prompt defines Einstein's personality."""
     # Assert
     assert "Einstein" in system_prompt, "System prompt should mention Einstein"
-    assert "mean" in system_prompt.lower(), "System prompt should specify mean personality"
+    assert (
+        "mean" in system_prompt.lower()
+    ), "System prompt should specify mean personality"
     assert "humor" in system_prompt.lower(), "System prompt should mention humor"
 
 
@@ -36,34 +39,50 @@ def test_system_prompt_has_character_limit(system_prompt):
 @pytest.mark.unit
 def test_system_prompt_requires_first_person():
     """Test that system prompt requires first-person perspective."""
-    assert "your point of view" in main.system_prompt.lower() or "your" in main.system_prompt.lower(), \
-        "System prompt should require first-person perspective"
+    assert (
+        "your point of view" in main.system_prompt.lower()
+        or "your" in main.system_prompt.lower()
+    ), "System prompt should require first-person perspective"
 
 
 @pytest.mark.unit
 def test_system_prompt_requires_personal_anecdotes():
     """Test that system prompt requires sharing personal experiences."""
-    assert "personal" in main.system_prompt.lower(), "System prompt should mention personal experiences"
+    assert (
+        "personal" in main.system_prompt.lower()
+    ), "System prompt should mention personal experiences"
 
 
 @pytest.mark.integration
 def test_prompt_template_structure():
     """Test that prompt template includes system, history, and user input."""
-    from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
+    from langchain_core.prompts import (
+        SystemMessagePromptTemplate,
+        HumanMessagePromptTemplate,
+        MessagesPlaceholder,
+    )
 
     # Assert
     messages = main.prompt.messages
     assert len(messages) == 3, "Prompt should have 3 message slots"
 
     # Check that system prompt is first
-    assert isinstance(messages[0], SystemMessagePromptTemplate), "First message should be system prompt template"
+    assert isinstance(
+        messages[0], SystemMessagePromptTemplate
+    ), "First message should be system prompt template"
 
     # Check that we have a history placeholder
-    assert isinstance(messages[1], MessagesPlaceholder), "Second should be history placeholder"
-    assert messages[1].variable_name == "history", "History placeholder should have correct variable name"
+    assert isinstance(
+        messages[1], MessagesPlaceholder
+    ), "Second should be history placeholder"
+    assert (
+        messages[1].variable_name == "history"
+    ), "History placeholder should have correct variable name"
 
     # Check that user input is last
-    assert isinstance(messages[2], HumanMessagePromptTemplate), "Last message should be user input template"
+    assert isinstance(
+        messages[2], HumanMessagePromptTemplate
+    ), "Last message should be user input template"
 
 
 @pytest.mark.unit
@@ -83,4 +102,4 @@ def test_chain_pipeline_structure():
     # The chain should be constructed with the | operator
     # We can't easily test the internal structure, but we can verify it exists
     assert main.chain is not None, "Chain should be initialized"
-    assert hasattr(main.chain, 'invoke'), "Chain should have invoke method"
+    assert hasattr(main.chain, "invoke"), "Chain should have invoke method"

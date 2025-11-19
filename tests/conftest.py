@@ -1,20 +1,21 @@
 """
 Shared pytest fixtures for AI Assistant Einstein tests.
 """
+
 import os
 import sys
 import pytest
 from unittest.mock import Mock, MagicMock, patch
 
 # Add parent directory to path before any imports
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 # Mock the LangChain Google GenAI at the module level before importing main
 @pytest.fixture(scope="session", autouse=True)
 def mock_langchain_imports():
     """Mock LangChain components to avoid API calls during tests."""
-    with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
+    with patch("langchain_google_genai.ChatGoogleGenerativeAI") as mock_llm:
         # Configure the mock to return a mock LLM instance
         mock_llm_instance = MagicMock()
         mock_llm.return_value = mock_llm_instance
@@ -44,7 +45,7 @@ def sample_history():
         {"role": "user", "content": "What is relativity?"},
         {"role": "assistant", "content": "Ah, my famous theory! Let me tell you..."},
         {"role": "user", "content": "Tell me more"},
-        {"role": "assistant", "content": "Fine, but you're testing my patience..."}
+        {"role": "assistant", "content": "Fine, but you're testing my patience..."},
     ]
 
 
@@ -55,7 +56,7 @@ def sample_langchain_history():
         HumanMessage(content="What is relativity?"),
         AIMessage(content="Ah, my famous theory! Let me tell you..."),
         HumanMessage(content="Tell me more"),
-        AIMessage(content="Fine, but you're testing my patience...")
+        AIMessage(content="Fine, but you're testing my patience..."),
     ]
 
 
@@ -77,10 +78,10 @@ def mock_chain(mocker, mock_llm_response):
 def mock_gradio_components(mocker):
     """Mock Gradio UI components."""
     return {
-        'chatbot': mocker.Mock(),
-        'textbox': mocker.Mock(),
-        'button': mocker.Mock(),
-        'blocks': mocker.Mock()
+        "chatbot": mocker.Mock(),
+        "textbox": mocker.Mock(),
+        "button": mocker.Mock(),
+        "blocks": mocker.Mock(),
     }
 
 

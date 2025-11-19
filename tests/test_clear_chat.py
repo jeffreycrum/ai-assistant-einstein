@@ -1,6 +1,7 @@
 """
 Unit tests for the clear_chat() function.
 """
+
 import pytest
 
 # Import after conftest has set up mocks
