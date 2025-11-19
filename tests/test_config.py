@@ -49,19 +49,21 @@ def test_system_prompt_requires_personal_anecdotes():
 @pytest.mark.integration
 def test_prompt_template_structure():
     """Test that prompt template includes system, history, and user input."""
+    from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
+
     # Assert
     messages = main.prompt.messages
     assert len(messages) == 3, "Prompt should have 3 message slots"
 
     # Check that system prompt is first
-    assert messages[0][0] == "system", "First message should be system prompt"
+    assert isinstance(messages[0], SystemMessagePromptTemplate), "First message should be system prompt template"
 
     # Check that we have a history placeholder
-    # MessagesPlaceholder doesn't have the same structure, so we check it exists
-    assert hasattr(messages[1], 'variable_name'), "Should have history placeholder"
+    assert isinstance(messages[1], MessagesPlaceholder), "Second should be history placeholder"
+    assert messages[1].variable_name == "history", "History placeholder should have correct variable name"
 
     # Check that user input is last
-    assert messages[2][0] == "user", "Last message should be user input"
+    assert isinstance(messages[2], HumanMessagePromptTemplate), "Last message should be user input template"
 
 
 @pytest.mark.unit
